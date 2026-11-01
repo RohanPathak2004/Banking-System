@@ -2,6 +2,7 @@ package com.banking.accountservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +22,9 @@ public class AccountEventConsumer {
     /*
     * Consumer transaction.completed event from kafka
     * Credits receiver account
-    *
+    * no fraud detected
     * */
+    @KafkaListener(topics = "transactions.completed")
     public void consumeTransactionCompleted(
             @Payload Map<String, Object> payload
     ){
@@ -36,6 +38,29 @@ public class AccountEventConsumer {
 
         } catch (Exception e) {
             log.error("Error crediting account: {}",e.getMessage());
+        }
+
+    }
+
+
+    /*
+    *
+    * Consume fraud.detected event from kafka
+    * Blocks the flagged account
+    * @Params payload
+    * */
+    @KafkaListener(topics = "fraud.detected")
+    public void consumeFraudDetected(
+            @Payload Map<String,Object> payload
+    ) {
+
+        try{
+            String accountNumber = (String) payload.get("accountNumber");
+            log.info("Fraud detected - Blocking account: {}", accountNumber);
+            accountService.blockAccount(accountNumber);
+
+        } catch (Exception e) {
+            log.error("Error blocking account: {}",e.getMessage());
         }
 
     }

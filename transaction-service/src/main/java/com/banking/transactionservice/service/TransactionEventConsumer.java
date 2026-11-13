@@ -25,6 +25,7 @@ public class TransactionEventConsumer {
 
 
     private final TransactionRepository transactionRepository;
+    private final TransactionService transactionService;
 
     private final RedisTemplate<String,String> redisTemplate;
     private final KafkaTemplate<String,Object> kafkaTemplate;
@@ -92,6 +93,12 @@ public class TransactionEventConsumer {
             @Payload Map<String,Object> payload
     ) {
 
+        try{
+            String transactionId = (String) payload.get("transactionId");
+            transactionService.processCleanResult(transactionId);
+        } catch (Exception e) {
+            log.error("Error processing fraud check result: {}",e.getMessage());
+        }
 
     }
 

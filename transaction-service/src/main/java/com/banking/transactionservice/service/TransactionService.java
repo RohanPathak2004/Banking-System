@@ -201,4 +201,14 @@ public class TransactionService {
                 .build();
     }
 
+    public void processCleanResult(String transactionId) {
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(()->new RuntimeException("Transaction not found "+transactionId));
+
+        if(transaction.getStatus() != TransactionStatus.PROCESSING) {
+            log.warn("Transaction {} not PROCESSING - skipping",transactionId);
+            return;
+        }
+        completeTransaction(transaction);
+    }
 }

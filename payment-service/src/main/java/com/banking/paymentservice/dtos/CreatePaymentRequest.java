@@ -14,7 +14,6 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class CreatePaymentRequest {
 
     @NotBlank(message = "Account Number is required")

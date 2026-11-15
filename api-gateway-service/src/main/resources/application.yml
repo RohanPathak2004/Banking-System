@@ -1,0 +1,50 @@
+spring:
+  application:
+    name: api-gateway-service
+  data:
+    redis:
+      host: localhost
+      prot: 6379
+  cloud:
+    gateway:
+      routes:
+        # Account service routes
+        - id: account-service
+          uri: http://locahost:8081
+          predicates:
+            - path=/api/v1/accounts/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter-replenishRate: 10
+                redis-rate-limiter-burstCapacity: 20
+        #transaction Service routes
+        - id: transaction-service
+          uri: http://locahost:8082
+          predicates:
+            - path=/api/v1/transactions/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter-replenishRate: 10
+                redis-rate-limiter-burstCapacity: 20
+
+        #payment Service routes
+        - id: payment-service
+          uri: http://locahost:8083
+          predicates:
+            - path=/api/v1/payments/**
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter-replenishRate: 5
+                redis-rate-limiter-burstCapacity: 10
+
+server:
+  port: 8080
+
+management:
+  endpoint:
+    web:
+      exposure:
+        include: health,info,gateway

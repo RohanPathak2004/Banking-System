@@ -17,7 +17,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-@KafkaListener()
 @Service
 @Slf4j
 @RequiredArgsConstructor

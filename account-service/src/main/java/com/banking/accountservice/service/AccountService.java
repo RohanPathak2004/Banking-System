@@ -25,9 +25,9 @@ public class AccountService {
 
     private BigDecimal getTransactionLimitByAccountType(AccountType accountType) {
         return switch (accountType) {
-            case SAVINGS -> new BigDecimal("100_000");
-            case CURRENT -> new BigDecimal("500_000");
-            case FIXED_DEPOSIT -> new BigDecimal("10_000");
+            case SAVINGS -> new BigDecimal("100000");
+            case CURRENT -> new BigDecimal("500000");
+            case FIXED_DEPOSIT -> new BigDecimal("10000");
         };
     }
 
@@ -36,14 +36,14 @@ public class AccountService {
         if (accountRepository.existsByEmail(request.email())) {
             throw new RuntimeException("Account already exists " + request.email());
         }
-
+        log.info("Deposit: {}", (request.initialDeposit()).toString());
         Account account = Account.builder()
                 .accountHolderName(request.accountHolderName())
                 .email(request.email())
                 .phone(request.phone())
                 .accountType(request.accountType())
                 .status(AccountStatus.ACTIVE)
-                .balance(request.initialDeposit())
+                .balance(new BigDecimal(request.initialDeposit().toString()))
                 .accountNumber(generateAccountNumber())
                 .dailyTransactionLimit(getTransactionLimitByAccountType(request.accountType()))
                 .build();

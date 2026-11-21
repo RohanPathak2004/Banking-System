@@ -7,6 +7,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 @Service
@@ -47,7 +48,7 @@ public class NotificationService {
         try {
             String senderAccount = (String) payload.get("senderAccountNumber");
             String receiverAccount = (String) payload.get("receiverAccountNumber");
-            String amount = (String) payload.get("amount");
+            BigDecimal amount = new BigDecimal(payload.get("amount").toString());
 
             // debit alert to sender
             String debitMessage = String.format(

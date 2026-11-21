@@ -55,7 +55,7 @@ public class TransactionService {
 
         //deduct from sender
         accountServiceClient.deductBalance(
-                request.receiverAccountNumber(),
+                request.senderAccountNumber(),
                 request.amount()
         );
 
@@ -129,6 +129,7 @@ public class TransactionService {
     }
 
     private void completeTransaction(Transaction transaction) {
+        accountServiceClient.creditBalance(transaction.getReceiverAccountNumber(),transaction.getAmount());
         transaction.setStatus(TransactionStatus.COMPLETED);
         transaction.setCompletedAt(LocalDateTime.now());
         Transaction savedTransaction = transactionRepository.save(transaction);
@@ -139,6 +140,7 @@ public class TransactionService {
                 savedTransaction.getAmount(),
                 savedTransaction.getDescription()
         );
+
 
         kafkaTemplate.send(TRANSACTION_COMPLETED_TOPIC,savedTransaction.getId(),transactionCompletedEvent);
         log.info("SAGA COMPLETED - Transaction {} completed",

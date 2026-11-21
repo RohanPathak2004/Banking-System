@@ -53,7 +53,6 @@ public class Transaction {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
     private LocalDateTime completedAt;
 
 }

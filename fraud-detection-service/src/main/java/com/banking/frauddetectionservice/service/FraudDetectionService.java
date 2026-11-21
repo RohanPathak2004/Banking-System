@@ -40,7 +40,7 @@ public class FraudDetectionService {
 
     public void checkTransaction(Map<String, Object> payload) {
         String transactionId = (String)payload.get("transactionId");
-        String accountNumber = (String)payload.get("accountNumber");
+        String accountNumber = (String)payload.get("senderAccountNumber");
         BigDecimal amount = new BigDecimal(payload.get("amount").toString());
 
         // Fetch real balance from Account Service
